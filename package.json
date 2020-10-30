@@ -1,0 +1,24 @@
+{
+  "name": "pumpmyrobot",
+  "version": "0.0.0",
+  "dependencies": {
+    "discord.js": "^12.4.1"
+  },
+  "description": "Bot discord",
+  "main": "pumpmyrobot.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PumpMyKins/PumpMyRobot.git"
+  },
+  "keywords": [
+    "pmk",
+    "bot"
+  ],
+  "author": "Clem-Fern",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/PumpMyKins/PumpMyRobot/issues"
+  },
+  "homepage": "https://github.com/PumpMyKins/PumpMyRobot#readme"
+}

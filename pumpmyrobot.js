@@ -11,7 +11,7 @@ try {
 
     const config = require('./config').getConfig();
 
-    client.login(config.token);
+    client.login(config.TOKEN);
 
 } catch (e){
 	console.log(e.stack);

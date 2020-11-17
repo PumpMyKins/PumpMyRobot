@@ -7,9 +7,11 @@ try {
     const discord = require('discord.js');
     const bot = new discord.Client();
     
-    console.log("Starting PumpMyRobot\nNode version: " + process.version + "\nDiscord.js version: " + discord.version);
+    console.log("Starting PumpMyRobot");
+    console.log("Node version: " + process.version);
+    console.log("Discord.js version: " + discord.version);
 
-    const config = require('./config').getConfig();
+    const config = require('./utils/config.js').getConfig();
 
     bot.on("ready", function () {
         bot.user.setPresence({

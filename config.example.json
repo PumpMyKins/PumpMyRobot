@@ -1,3 +1,10 @@
 {
- "TOKEN": "TOKEN"
+    "TOKEN": "token",
+    "security" : {
+       "allowed_guilds_id" : ["id"]
+    },
+    "bot" : {
+        "name" : "PumpMyRobot",
+        "default_activity" : "pumpmykins.eu"
+    }
 }

@@ -1,7 +1,11 @@
 {
     "TOKEN": "token",
     "security" : {
-       "allowed_guilds_id" : ["id"]
+       "allowed_guilds_id" : ["id"],
+       "api" : {
+            "host" : "api.pumpmykins.eu",
+            "token" : "token"
+       }
     },
     "bot" : {
         "name" : "PumpMyRobot",

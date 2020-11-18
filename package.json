@@ -2,7 +2,8 @@
   "name": "pumpmyrobot",
   "version": "0.0.0",
   "dependencies": {
-    "discord.js": "^12.4.1"
+    "discord.js": "^12.4.1",
+    "mongoose": "^5.10.15"
   },
   "description": "Bot discord",
   "main": "pumpmyrobot.js",

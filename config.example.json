@@ -10,5 +10,11 @@
     "bot" : {
         "name" : "PumpMyRobot",
         "default_activity" : "pumpmykins.eu"
+    },
+    "mongo" : {
+        "host" : "localhost:3306",
+        "username" : "pumpmyrobot",
+        "password" : "pumpmyrobot",
+        "database" : "pumpmyrobot"
     }
 }

@@ -30,8 +30,8 @@ try {
                 activity: {
                     name: config.bot.default_activity
                 }
-            });  
-
+            });
+            
             setupBot(config,PumpMyMongoose,bot);
     
         });
@@ -60,6 +60,14 @@ function setupBot(config,pumpmymongoose,bot) {
     bot.on("guildCreate", guild => {
         console.log("Joined a new guild[" + guild.id + "] : " + guild.name);
         GuildManager.setup(config,pumpmymongoose,guild);
+    });
+
+    const StreamSniper = require('./utils/stream_sniper');
+    StreamSniper.setup(config,pumpmymongoose,bot);
+
+    bot.on("presenceUpdate", function(oldMember, newMember) {
+        console.log(newMember.user.username + " went " + newMember.user.presence.status);
+        StreamSniper.stalk(config,pumpmymongoose,bot,newMember);
     });
 
 }

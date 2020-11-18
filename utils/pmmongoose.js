@@ -26,7 +26,7 @@ var GuildSchema = new Schema({
     log : {
         log_channel_id : { type: String, default: 'none'},
         untrack_channels_id : [String],
-        untrack_categories_id : [String]
+        untrack_categories_id : [String],
     },
     roles : {
         roles_reac : [{type: Schema.ObjectId, ref: 'RoleReac'}],
@@ -35,7 +35,11 @@ var GuildSchema = new Schema({
     archives : {
         public_categorie_id : { type: String, default: 'none'},
         private_categorie_id : { type: String, default: 'none'},
-    }
+    },
+    stream_sniper : {
+        username_when_sniping : { type: String, default: 'PumpMyViewer'},
+        stalkers : [String],
+    },
 });
 
 const GuildModel = mongoose.model('guilds', GuildSchema);

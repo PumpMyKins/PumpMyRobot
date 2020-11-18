@@ -25,11 +25,7 @@ try {
         console.log("Discord.js version: " + discord.version);
     
         bot.on("ready", function () {
-            bot.user.setUsername(config.bot.name);
-            bot.user.setActivity(config.bot.default_activity,{type: "PLAYING"})
-
             setupBot(config,PumpMyMongoose,bot);
-    
         });
     
         bot.on("disconnected", function () {
@@ -50,16 +46,26 @@ try {
 
 function setupBot(config,pumpmymongoose,bot) {
 
+    // guild manager module
     const GuildManager = require('./utils/guild_manager');
     GuildManager.setupAll(config,pumpmymongoose,bot);
+
+    // stream detector module
+    const StreamSniper = require('./utils/stream_sniper');
+    StreamSniper.setup(config,pumpmymongoose,bot, function(stalking) {
+        if(!stalking){ // after setup if not stalking set default bot profile
+            bot.user.setUsername(config.bot.default.name);
+            bot.user.setAvatar(config.bot.default.avatar_url).catch(console.error);
+            bot.user.setActivity(config.bot.default.activity.name,{type: config.bot.default.activity.type});
+        }
+    });
+
     //joined a server
     bot.on("guildCreate", guild => {
         console.log("Joined a new guild[" + guild.id + "] : " + guild.name);
         GuildManager.setup(config,pumpmymongoose,guild);
+        StreamSniper.setup(config,pumpmymongoose,bot);
     });
-
-    const StreamSniper = require('./utils/stream_sniper');
-    StreamSniper.setup(config,pumpmymongoose,bot);
 
     bot.on("presenceUpdate", function(oldMember, newMember) {
         console.log(newMember.user.username + " went " + newMember.user.presence.status);

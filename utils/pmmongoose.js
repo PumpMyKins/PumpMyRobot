@@ -34,14 +34,15 @@ var GuildSchema = new Schema({
     },
     archives : {
         public_categorie_id : { type: String, default: 'none'},
-        private_categorie_id : { type: String, default: 'none'},
-    },
-    stream_sniper : {
-        username_when_sniping : { type: String, default: 'PumpMyViewer'},
-        stalkers : [String],
+        private_categorie_id : { type: String, default: 'none'}
     },
 });
 
+var StalkerSchema = new Schema({
+    streamer_id : { type: String, unique : true, index : true, required : true}
+});
+
+const StalkerModel = mongoose.model('stalkers', StalkerSchema);
 const GuildModel = mongoose.model('guilds', GuildSchema);
 const RoleReacModel = mongoose.model('rolereacs', RoleReacSchema);
 const RoleModel = mongoose.model('roles', RoleSchema);
@@ -53,6 +54,7 @@ function Connection(url) {
 
 exports.mongoose = mongoose
 exports.connection = Connection
+exports.Stalker = StalkerModel
 exports.Guild = GuildModel
 exports.RoleReac = RoleReacModel
 exports.Role = RoleModel

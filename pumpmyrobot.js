@@ -26,12 +26,8 @@ try {
     
         bot.on("ready", function () {
             bot.user.setUsername(config.bot.name);
-            bot.user.setPresence({
-                activity: {
-                    name: config.bot.default_activity
-                }
-            });
-            
+            bot.user.setActivity(config.bot.default_activity,{type: "PLAYING"})
+
             setupBot(config,PumpMyMongoose,bot);
     
         });

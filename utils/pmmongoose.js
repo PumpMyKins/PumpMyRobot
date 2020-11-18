@@ -1,3 +1,5 @@
+const config = require('./config').getConfig();
+
 const mongoose = require('mongoose'), Schema = mongoose.Schema
 mongoose.set('useCreateIndex', true);
 
@@ -18,7 +20,7 @@ var RoleReacSchema = new Schema({
 
 var GuildSchema = new Schema({
     _gid : { type: String, unique : true, index : true, required : true}, 
-    command_prefix : { type: String, required : true},
+    command_prefix : { type: String, default: config.bot.default_command_prefix},
     special_channels : {
         welcome_channel_id : { type: String, default: 'none'},
         rules_channel_id : { type: String, default: 'none'}

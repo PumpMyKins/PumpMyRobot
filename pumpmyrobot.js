@@ -77,7 +77,9 @@ function setupBot(config,pumpmymongoose,bot) {
     bot.on("presenceUpdate", function(oldMember, newMember) {
         EventsDeduplicator.presenceUpdateEvent(bot,oldMember,newMember,function() {
             logger.info(newMember.user.username + " went " + newMember.user.presence.status);
-        StreamSniper.stalk(config,pumpmymongoose,bot,newMember);
+            StreamSniper.isStreamer(pumpmymongoose,newMember,function() {
+                StreamSniper.stalk(config,bot,newMember);
+            });
     });
     });
 

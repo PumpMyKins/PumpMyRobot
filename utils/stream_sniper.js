@@ -5,6 +5,7 @@ exports.setLogger = function(log) {
 
 var isStalking = false;
 var stalkedUserId = "none";
+var avatar = "default";
 
 function startStalking(id){
     isStalking = true;
@@ -40,7 +41,19 @@ function setPresence(bot,activity){
     });
 }
 
-exports.stalk = function(config,pumpmymongoose,bot,newMember) {
+exports.isStreamer = function(pumpmymongoose,member,next){
+    pumpmymongoose.Stalker.exists({streamer_id: member.user.id},function (err, result) {
+        if (err) {
+            logger.error("StreamSniper isStreamer : stalker findOne..."); // throw error
+            throw err; 
+        }
+        if(result){
+            next();
+        }
+    });   
+}
+
+exports.stalk = function(config,bot,newMember) {
     const userId = newMember.user.id;
     const activities = newMember.user.presence.activities;
     const streamActivity = getStreamActivity(activities);
@@ -55,8 +68,10 @@ exports.stalk = function(config,pumpmymongoose,bot,newMember) {
             startStalking(newMember.user.id)
 
             bot.user.setUsername(config.bot.stalking.name);
-            bot.user.setAvatar(config.bot.stalking.avatar_url).catch(console.error);
-
+            if(avatar != "stalk"){
+                //bot.user.setAvatar(config.bot.stalking.avatar_url).catch(console.error);
+                avatar = "stalk";
+            }
             setPresence(bot,activity);
 
         }else{
@@ -70,10 +85,13 @@ exports.stalk = function(config,pumpmymongoose,bot,newMember) {
             console.log("stop stalking");
 
             stopStalking(); // reset value
-            setup(config,pumpmymongoose,bot,function(stalking) {
+            exports.setup(config,pumpmymongoose,bot,function(stalking) {
                 if(!stalking){ // after setup if not
                     bot.user.setUsername(config.bot.default.name);
-                    bot.user.setAvatar(config.bot.default.avatar_url).catch(console.error);
+                    if(avatar != "default"){
+                        //bot.user.setAvatar(config.bot.default.avatar_url).catch(console.error);
+                        avatar = "default";
+                    }
                     bot.user.setActivity(config.bot.default.activity.name,{type: config.bot.default.activity.type});
                 }
             }); // checking other streamer
@@ -82,5 +100,31 @@ exports.stalk = function(config,pumpmymongoose,bot,newMember) {
 };
 
 exports.setup = function(config,pumpmymongoose,bot,next) {
-    next(isStalking);
+    const guilds = bot.guilds.cache;
+    pumpmymongoose.Stalker.find(null, function (err, streamers) { // get all streamer in GuildConfig
+        if (err) {
+            logger.error("StreamSniper setup : stalker find..."); // throw error
+            throw err; 
+        }
+
+        const FindException = {}; // exception to throw if streamer found
+        try {
+            streamers.forEach(streamer => {
+                guilds.forEach(guild => {
+                    const member = guild.members.get(streamer.streamer_id);
+                    if(member){
+                        exports.stalk(config,bot,member)
+                        if(isStalking){
+                            throw FindException;
+                        }
+                    }
+                });
+            });  
+        } catch (e) {
+            if (e !== FindException) throw e;
+        }
+        if(!isStalking){
+            next();
+        }
+    });
 };

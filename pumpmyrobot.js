@@ -1,3 +1,5 @@
+const logger = require('./utils/logger').logger;
+
 process.on('unhandledRejection', (reason) => {
     console.error(reason);
     process.exit(1);
@@ -8,21 +10,21 @@ process.on('SIGTERM', () => {
 });
 
 try {
-    const config = require('./utils/config').getConfig();
+    const config = require('./utils/config')(logger);
 
     const PumpMyMongoose = require('./utils/pmmongoose');
     const connection = PumpMyMongoose.connection(config.mongoUrl); 
-    connection.on('error', console.error.bind(console, "Mongo connexion ERROR")); 
+    connection.on('error', function() {logger.error("Mongo connexion ERROR")}); 
     connection.once('open', function (){
-        console.log("Mongo OK..."); 
+        logger.info("Mongo OK..."); 
 
 
         const discord = require('discord.js');
         const bot = new discord.Client();
 
-        console.log("Starting " + config.bot.name);
-        console.log("Node version: " + process.version);
-        console.log("Discord.js version: " + discord.version);
+        logger.info("Starting " + config.bot.name);
+        logger.info("Node version: " + process.version);
+        logger.info("Discord.js version: " + discord.version);
     
         bot.on("ready", function () {
             setupBot(config,PumpMyMongoose,bot);
@@ -30,7 +32,7 @@ try {
     
         bot.on("disconnected", function () {
     
-            console.log("Disconnected!");
+            logger.info("Disconnected!");
             process.exit(1);
         
         });
@@ -39,8 +41,8 @@ try {
 
     }); 
 } catch (e){
-	console.log(e.stack);
-	console.log(process.version);
+	logger.error(e.stack);
+	logger.error(process.version);
 	process.exit();
 }
 
@@ -48,10 +50,12 @@ function setupBot(config,pumpmymongoose,bot) {
 
     // guild manager module
     const GuildManager = require('./utils/guild_manager');
+    GuildManager.setLogger(logger);
     GuildManager.setupAll(config,pumpmymongoose,bot);
 
     // stream detector module
     const StreamSniper = require('./utils/stream_sniper');
+    StreamSniper.setLogger(logger);
     StreamSniper.setup(config,pumpmymongoose,bot, function(stalking) {
         if(!stalking){ // after setup if not stalking set default bot profile
             bot.user.setUsername(config.bot.default.name);
@@ -62,14 +66,19 @@ function setupBot(config,pumpmymongoose,bot) {
 
     //joined a server
     bot.on("guildCreate", guild => {
-        console.log("Joined a new guild[" + guild.id + "] : " + guild.name);
+        logger.info("Joined a new guild[" + guild.id + "] : " + guild.name);
         GuildManager.setup(config,pumpmymongoose,guild);
         StreamSniper.setup(config,pumpmymongoose,bot);
     });
 
+    // events deduplicator module
+    const EventsDeduplicator = require('./utils/events_deduplicator');
+    EventsDeduplicator.setLogger(logger);
     bot.on("presenceUpdate", function(oldMember, newMember) {
-        console.log(newMember.user.username + " went " + newMember.user.presence.status);
+        EventsDeduplicator.presenceUpdateEvent(bot,oldMember,newMember,function() {
+            logger.info(newMember.user.username + " went " + newMember.user.presence.status);
         StreamSniper.stalk(config,pumpmymongoose,bot,newMember);
+    });
     });
 
 }

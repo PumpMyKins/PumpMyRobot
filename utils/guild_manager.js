@@ -1,20 +1,25 @@
+var logger;
+exports.setLogger = function(log) {
+    logger = log;
+}
+
 function setupGuild(config,pumpmymongoose,guild) {
     if(!leaveGuildIfUnallowed(config,guild)){
         // setup guild
         pumpmymongoose.Guild.findOne({'_gid': guild.id}, function(err, g) {
             if(g && !err){
-                console.log("GuildConfig[" + g._gid + "] find...");
+                logger.info("GuildConfig[" + g._gid + "] find...");
             }else{
-                console.log("GuildConfig not find...");
+                logger.warn("GuildConfig not find...");
                 var GuildConfig = new pumpmymongoose.Guild();
                 GuildConfig._gid = guild.id;
                 GuildConfig.command_prefix = config.bot.default_command_prefix;
                 GuildConfig.save(function(err1){
                     if(err1){
-                        console.log("new GuildConfig save ERROR");
-                        console.log(err1);
+                        logger.error("new GuildConfig save ERROR");
+                        logger.error(err1);
                     }else{
-                        console.log("new GuildConfig saved !");
+                        logger.info("new GuildConfig saved !");
                     }
                 });
             }
@@ -24,13 +29,13 @@ function setupGuild(config,pumpmymongoose,guild) {
 
 function leaveGuildIfUnallowed(config,guild) {
     if(!config.security.allowed_guilds_id.includes(guild.id)){
-        console.log("guild[" + guild.id + "] not allowed ! leaving...");
+        logger.warn("guild[" + guild.id + "] not allowed ! leaving...");
         guild.leave();
         return true;
     }
     
     //debug
-    console.log("DEBUG guild[" + guild.id + "] allowed !");
+    logger.info("DEBUG guild[" + guild.id + "] allowed !");
     return false;
     
 }

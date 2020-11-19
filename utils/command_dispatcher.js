@@ -1,3 +1,8 @@
+var logger;
+exports.setLogger = function(log) {
+    logger = log;
+}
+
 const commands = {
 
 };

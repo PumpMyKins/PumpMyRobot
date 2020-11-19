@@ -14,7 +14,7 @@ var RoleReacSchema = new Schema({
     reac_id : { type: String, required : true},
     remove_on_leave : { type: Boolean, required : true},
     roles : [RoleSchema]
-});
+}).index({ _guild: 1, channel_id: 1, message_id: 1, reac_id: 1 },{ unique: true });
 
 var GuildSchema = new Schema({
     _gid : { type: String, unique : true, index : true, required : true}, 

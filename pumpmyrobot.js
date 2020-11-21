@@ -1,4 +1,4 @@
-const logger = require('./utils/logger').logger;
+const logger = require('./libs/logger').logger;
 
 process.on('unhandledRejection', (reason) => {
     console.error(reason);
@@ -10,9 +10,9 @@ process.on('SIGTERM', () => {
 });
 
 try {
-    const config = require('./utils/config')(logger);
+    const config = require('./libs/config')(logger);
 
-    const PumpMyMongoose = require('./utils/pmmongoose');
+    const PumpMyMongoose = require('./libs/pmmongoose');
     const connection = PumpMyMongoose.connection(config.mongoUrl); 
     connection.on('error', function() {logger.error("Mongo connexion ERROR")}); 
     connection.once('open', function (){
@@ -59,7 +59,7 @@ function setupBot(config,pumpmymongoose,bot) {
     StreamSniper.setup(config,pumpmymongoose,bot, function(stalking) {
         if(!stalking){ // after setup if not stalking set default bot profile
             bot.user.setUsername(config.bot.default.name);
-            bot.user.setAvatar(config.bot.default.avatar_url).catch(console.error);
+            //bot.user.setAvatar(config.bot.default.avatar_url).catch(console.error);
             bot.user.setActivity(config.bot.default.activity.name,{type: config.bot.default.activity.type});
         }
     });
@@ -72,7 +72,7 @@ function setupBot(config,pumpmymongoose,bot) {
     });
 
     // events deduplicator module
-    const EventsDeduplicator = require('./utils/events_deduplicator');
+    const EventsDeduplicator = require('./libs/events_deduplicator');
     EventsDeduplicator.setLogger(logger);
     bot.on("presenceUpdate", function(oldMember, newMember) {
         EventsDeduplicator.presenceUpdateEvent(bot,oldMember,newMember,function() {
@@ -81,7 +81,7 @@ function setupBot(config,pumpmymongoose,bot) {
             StreamSniper.isStreamer(pumpmymongoose,user,function() {
                 StreamSniper.stalk(config,pumpmymongoose,bot,user);
             });
-    });
+        });        
     });
 
 }

@@ -48,6 +48,7 @@ function getStreamersList(pumpmymongoose,next) {
         pumpmymongoose.Stalker.find(null,function (err, result) {
             if (err) {
                 logger.error("StreamSniper getStreamersList : stalker find..."); // throw error 
+                throw err
             }else{
                 streamersList = [];
                 result.forEach(streamer => {

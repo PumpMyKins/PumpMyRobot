@@ -17,7 +17,7 @@ function setupGuild(config,pumpmymongoose,guild) {
                 GuildConfig.save(function(err1){
                     if(err1){
                         logger.error("new GuildConfig save ERROR");
-                        logger.error(err1);
+                        logger.error(err1.stack);
                     }else{
                         logger.info("new GuildConfig saved !");
                     }

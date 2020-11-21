@@ -3,7 +3,7 @@ const winston = require('winston');
 require('winston-daily-rotate-file');
 
 const logFormat = winston.format.printf(function(info) {
-  return `${new Date().toISOString()}-${info.level}: ${JSON.stringify(info.message, null, 4)}`;
+  return `${new Date().toISOString()}-${info.level}: ${info.message}`;
 });
 
 const transports = {
@@ -13,7 +13,8 @@ const transports = {
     dirname: 'logs',
     datePattern: 'YYYY-MM-DD-HH',
     maxSize: '20m',
-    maxFiles: '14d'
+    maxFiles: '14d',
+    format: logFormat
   })
 };
 

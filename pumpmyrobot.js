@@ -1,12 +1,12 @@
 const logger = require('./libs/logger').logger;
 
-process.on('unhandledRejection', (reason) => {
-    console.error(reason);
+process.on('unhandledRejection', (err) => {
+    logger.error(e.stack);
     process.exit(1);
 });
 
 process.on('SIGTERM', () => {
-    console.info('SIGTERM signal received.');
+    logger.info('SIGTERM signal received.');
 });
 
 try {

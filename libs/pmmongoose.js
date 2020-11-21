@@ -2,22 +2,21 @@ const mongoose = require('mongoose'), Schema = mongoose.Schema
 mongoose.set('useCreateIndex', true);
 
 var RoleSchema = new Schema({
-    _guild : {type: Schema.ObjectId, ref: 'Guild'},
+    guild : {type: Schema.ObjectId, ref: 'Guild'},
     role_id : { type: String, required : true},
     weight : { type: Number, required : true}
 });
 
 var RoleReacSchema = new Schema({
-    _guild : {type: Schema.ObjectId, ref: 'Guild'},
+    guild_id : { type: String, required : true},
     channel_id : { type: String, required : true},
     message_id : { type: String, required : true},
     reac_id : { type: String, required : true},
-    remove_on_leave : { type: Boolean, required : true},
-    roles : [RoleSchema]
-}).index({ _guild: 1, channel_id: 1, message_id: 1, reac_id: 1 },{ unique: true });
+    role_ids : [String]
+}).index({ guild_id: 1, channel_id: 1, message_id: 1, reac_id: 1 },{ unique: true });
 
 var GuildSchema = new Schema({
-    _gid : { type: String, unique : true, index : true, required : true}, 
+    id : { type: String, unique : true, index : true, required : true}, 
     command_prefix : { type: String, default: '.p'},
     special_channels : {
         welcome_channel_id : { type: String, default: 'none'},
@@ -28,10 +27,7 @@ var GuildSchema = new Schema({
         untrack_channels_id : [String],
         untrack_categories_id : [String],
     },
-    roles : {
-        roles_reac : [{type: Schema.ObjectId, ref: 'RoleReac'}],
-        roles : [RoleSchema]
-    },
+    roles : [RoleSchema],
     archives : {
         public_categorie_id : { type: String, default: 'none'},
         private_categorie_id : { type: String, default: 'none'}

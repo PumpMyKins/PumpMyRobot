@@ -6,22 +6,28 @@ exports.setLogger = function(log) {
 function setupGuild(config,pumpmymongoose,guild) {
     if(!leaveGuildIfUnallowed(config,guild)){
         // setup guild
-        pumpmymongoose.Guild.findOne({'_gid': guild.id}, function(err, g) {
-            if(g && !err){
-                logger.info("GuildConfig[" + g._gid + "] find...");
+        pumpmymongoose.Guild.exists({'id': guild.id}, function(err, result) {
+            if(err){
+                logger.error("GuildConfig[" + guild.id + "] setup checking error...");
+                logger.error(err1.stack);
+                throw err;
             }else{
-                logger.warn("GuildConfig not find...");
-                var GuildConfig = new pumpmymongoose.Guild();
-                GuildConfig._gid = guild.id;
-                GuildConfig.command_prefix = config.bot.default_command_prefix;
-                GuildConfig.save(function(err1){
-                    if(err1){
-                        logger.error("new GuildConfig save ERROR");
-                        logger.error(err1.stack);
-                    }else{
-                        logger.info("new GuildConfig saved !");
-                    }
-                });
+                if(result){
+                    logger.info("GuildConfig[" + guild.id + "] found...");
+                }else{
+                    logger.warn("GuildConfig[" + guild.id + "] not found...");
+                    var GuildConfig = new pumpmymongoose.Guild();
+                    GuildConfig.id = guild.id;
+                    GuildConfig.command_prefix = config.bot.default_command_prefix;
+                    GuildConfig.save(function(err1){
+                        if(err1){
+                            logger.error("GuildConfig[" + guild.id + "] creating error...");
+                            logger.error(err1.stack);
+                        }else{
+                            logger.info("GuildConfig[" + guild.id + "] created...");
+                        }
+                    });
+                }
             }
         })
     }
@@ -35,7 +41,7 @@ function leaveGuildIfUnallowed(config,guild) {
     }
     
     //debug
-    logger.info("DEBUG guild[" + guild.id + "] allowed !");
+    logger.debug("guild[" + guild.id + "] allowed !");
     return false;
     
 }

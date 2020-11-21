@@ -3,6 +3,8 @@ exports.setLogger = function(log) {
     logger = log;
 }
 
+var streamersList = null;
+
 var isStalking = false;
 var stalkedUserId = "none";
 var avatar = "default";
@@ -27,13 +29,11 @@ function getStreamActivity(activities) {
     return null;
 }
 
-function setPresence(bot,activity){
-    //bot.user.setPresence({streamActivity})
-    // OR
+function setPresence(bot,streamActivity){
     bot.user.setPresence({
         activity: {
-            name: streamActivity.name,
-            type: 'STREAMING',
+            name: streamActivity.url.replace("https://www.",""),
+            type: 'WATCHING',
             url: streamActivity.url,
             details: streamActivity.details,
             state: streamActivity.state
@@ -41,38 +41,58 @@ function setPresence(bot,activity){
     });
 }
 
-exports.isStreamer = function(pumpmymongoose,member,next){
-    pumpmymongoose.Stalker.exists({streamer_id: member.user.id},function (err, result) {
-        if (err) {
-            logger.error("StreamSniper isStreamer : stalker findOne..."); // throw error
-            throw err; 
-        }
-        if(result){
-            next();
-        }
-    });   
+function getStreamersList(pumpmymongoose,next) {
+    if(streamersList){
+        next(null,streamersList);
+    }else {
+        pumpmymongoose.Stalker.find(null,function (err, result) {
+            if (err) {
+                logger.error("StreamSniper getStreamersList : stalker find..."); // throw error 
+            }else{
+                streamersList = [];
+                result.forEach(streamer => {
+                    streamersList.push(streamer.streamer_id);
+                });
+            }
+            next(err,streamersList);
+        }); 
+    }
 }
 
-exports.stalk = function(config,bot,newMember) {
-    const userId = newMember.user.id;
-    const activities = newMember.user.presence.activities;
+exports.isStreamer = function(pumpmymongoose,user,next){
+    getStreamersList(pumpmymongoose, function(err,streamers) {
+        if (err) {
+            logger.error("StreamSniper isStreamer : stalker getStreamersList..."); // throw error
+            throw err; 
+        }
+        
+        if(streamers.includes(user.id)){
+            next();
+        }
+
+    });
+}
+
+exports.stalk = function(config,pumpmymongoose,bot,user) {
+    const userId = user.id;
+    const activities = user.presence.activities;
     const streamActivity = getStreamActivity(activities);
     if(streamActivity){
         console.log(streamActivity);
         if(stalkedUserId == userId){
             
-            setPresence(bot,activity);
+            setPresence(bot,streamActivity);
 
         }else if(!isStalking){
             // start or update stalking
-            startStalking(newMember.user.id)
+            startStalking(user.id)
 
             bot.user.setUsername(config.bot.stalking.name);
             if(avatar != "stalk"){
                 //bot.user.setAvatar(config.bot.stalking.avatar_url).catch(console.error);
                 avatar = "stalk";
             }
-            setPresence(bot,activity);
+            setPresence(bot,streamActivity);
 
         }else{
             // already stalking user
@@ -100,31 +120,37 @@ exports.stalk = function(config,bot,newMember) {
 };
 
 exports.setup = function(config,pumpmymongoose,bot,next) {
-    const guilds = bot.guilds.cache;
-    pumpmymongoose.Stalker.find(null, function (err, streamers) { // get all streamer in GuildConfig
+    getStreamersList(pumpmymongoose, function(err,streamers) { // get all streamer in GuildConfig
         if (err) {
             logger.error("StreamSniper setup : stalker find..."); // throw error
             throw err; 
         }
 
+        const guilds = bot.guilds.cache;
+
         const FindException = {}; // exception to throw if streamer found
         try {
             streamers.forEach(streamer => {
                 guilds.forEach(guild => {
-                    const member = guild.members.get(streamer.streamer_id);
-                    if(member){
-                        exports.stalk(config,bot,member)
-                        if(isStalking){
-                            throw FindException;
-                        }
+                    if(guild.available){
+                        guild.members.fetch({user: streamer, withPresences: true}).then(function(user) {
+                            if(user){
+                                exports.stalk(config,bot,pumpmymongoose,user)
+                                if(isStalking){
+                                    throw FindException;
+                                }
+                            }
+                        });                        
                     }
                 });
             });  
         } catch (e) {
-            if (e !== FindException) throw e;
+                if (e !== FindException) throw e;
         }
+
         if(!isStalking){
-            next();
+            next(); // go next if no streamer streaming
         }
+    
     });
 };

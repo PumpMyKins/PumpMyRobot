@@ -76,9 +76,10 @@ function setupBot(config,pumpmymongoose,bot) {
     EventsDeduplicator.setLogger(logger);
     bot.on("presenceUpdate", function(oldMember, newMember) {
         EventsDeduplicator.presenceUpdateEvent(bot,oldMember,newMember,function() {
-            logger.info(newMember.user.username + " went " + newMember.user.presence.status);
-            StreamSniper.isStreamer(pumpmymongoose,newMember,function() {
-                StreamSniper.stalk(config,bot,newMember);
+            const user = newMember.user;
+            logger.info(user.username + " went " + user.presence.status);
+            StreamSniper.isStreamer(pumpmymongoose,user,function() {
+                StreamSniper.stalk(config,pumpmymongoose,bot,user);
             });
     });
     });

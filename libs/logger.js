@@ -14,7 +14,8 @@ const transports = {
     datePattern: 'YYYY-MM-DD-HH',
     maxSize: '20m',
     maxFiles: '14d',
-    format: logFormat
+    format: logFormat,
+    level: 'debug'
   })
 };
 

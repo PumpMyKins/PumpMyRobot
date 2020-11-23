@@ -6,17 +6,17 @@ exports.setLogger = function(log) {
 var streamersList = null;
 
 var isStalking = false;
-var stalkedUserId = "none";
+var streamerUserId = "none";
 var avatar = "default";
 
 function startStalking(id){
     isStalking = true;
-    stalkedUserId = id;
+    streamerUserId = id;
 }
 
 function stopStalking(){
     isStalking = true;
-    stalkedUserId = "none";
+    streamerUserId = "none";
 }
 
 function getStreamActivity(activities) {
@@ -45,9 +45,9 @@ function getStreamersList(pumpmymongoose,next) {
     if(streamersList){
         next(null,streamersList);
     }else {
-        pumpmymongoose.Stalker.find(null,function (err, result) {
+        pumpmymongoose.Streamer.find(null,function (err, result) {
             if (err) {
-                logger.error("StreamSniper getStreamersList : stalker find..."); // throw error 
+                logger.error("StreamSniper getStreamersList : streamer find..."); // throw error 
                 throw err
             }else{
                 streamersList = [];
@@ -63,7 +63,7 @@ function getStreamersList(pumpmymongoose,next) {
 exports.isStreamer = function(pumpmymongoose,user,next){
     getStreamersList(pumpmymongoose, function(err,streamers) {
         if (err) {
-            logger.error("StreamSniper isStreamer : stalker getStreamersList..."); // throw error
+            logger.error("StreamSniper isStreamer : getStreamersList..."); // throw error
             throw err; 
         }
         
@@ -80,7 +80,7 @@ exports.stalk = function(config,pumpmymongoose,bot,user) {
     const streamActivity = getStreamActivity(activities);
     if(streamActivity){
         console.log(streamActivity);
-        if(stalkedUserId == userId){
+        if(streamerUserId == userId){
             
             setPresence(bot,streamActivity);
 
@@ -97,11 +97,11 @@ exports.stalk = function(config,pumpmymongoose,bot,user) {
 
         }else{
             // already stalking user
-            console.log("already stalking user " + stalkedUserId);
+            console.log("already stalking user " + streamerUserId);
         }
     }else{
         // if stalking user stop streaming
-        if(stalkedUserId == userId){
+        if(streamerUserId == userId){
             // stop stalking
             console.log("stop stalking");
 
@@ -123,7 +123,7 @@ exports.stalk = function(config,pumpmymongoose,bot,user) {
 exports.setup = function(config,pumpmymongoose,bot,next) {
     getStreamersList(pumpmymongoose, function(err,streamers) { // get all streamer in GuildConfig
         if (err) {
-            logger.error("StreamSniper setup : stalker find..."); // throw error
+            logger.error("StreamSniper setup : streamer find..."); // throw error
             throw err; 
         }
 

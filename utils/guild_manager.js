@@ -6,7 +6,7 @@ exports.setLogger = function(log) {
 function setupGuild(config,pumpmymongoose,guild) {
     if(!leaveGuildIfUnallowed(config,guild)){
         // setup guild
-        pumpmymongoose.Guild.exists({'id': guild.id}, function(err, result) {
+        pumpmymongoose.Guild.exists({'_id': guild.id}, function(err, result) {
             if(err){
                 logger.error("GuildConfig[" + guild.id + "] setup checking error...");
                 logger.error(err1.stack);
@@ -17,7 +17,7 @@ function setupGuild(config,pumpmymongoose,guild) {
                 }else{
                     logger.warn("GuildConfig[" + guild.id + "] not found...");
                     var GuildConfig = new pumpmymongoose.Guild();
-                    GuildConfig.id = guild.id;
+                    GuildConfig._id = guild.id;
                     GuildConfig.command_prefix = config.bot.default_command_prefix;
                     GuildConfig.save(function(err1){
                         if(err1){

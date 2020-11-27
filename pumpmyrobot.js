@@ -1,7 +1,7 @@
 const logger = require('./libs/logger').logger;
 
 process.on('unhandledRejection', (err) => {
-    logger.error(e.stack);
+    logger.error(err.stack);
     process.exit(1);
 });
 

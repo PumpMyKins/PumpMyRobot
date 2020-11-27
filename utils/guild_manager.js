@@ -33,6 +33,19 @@ function setupGuild(config,pumpmymongoose,guild) {
     }
 }
 
+function deleteGuild(pumpmymongoose,guild) {
+    pumpmymongoose.Guild.deleteOne({_id: guild.id},function(err) {
+        if(err){
+            logger.error("GuildConfig[" + guild.id + "] deleting error...");
+            logger.error(err.stack);
+            throw err;
+        }
+        logger.debug("GuildConfig[" + guild.id + "] deleted...");
+    });
+}
+
+exports.delete = deleteGuild;
+
 function leaveGuildIfUnallowed(config,guild) {
     if(!config.security.allowed_guilds_id.includes(guild.id)){
         logger.warn("guild[" + guild.id + "] not allowed ! leaving...");

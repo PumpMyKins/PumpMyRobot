@@ -20,7 +20,7 @@ try {
 
 
         const discord = require('discord.js');
-        const bot = new discord.Client();
+        const bot = new discord.Client({partials : ['MESSAGE', 'USER', 'GUILD_MEMBER',  'CHANNEL', 'REACTION']});
 
         logger.info("Starting " + config.bot.name);
         logger.info("Node version: " + process.version);

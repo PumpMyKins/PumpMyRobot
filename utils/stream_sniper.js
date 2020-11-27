@@ -150,7 +150,7 @@ exports.setup = function(config,pumpmymongoose,bot,next) {
         }
 
         if(!isStalking){
-            next(); // go next if no streamer streaming
+            if(next) next(); // go next if no streamer streaming
         }
     
     });

@@ -9,7 +9,7 @@ function setupGuild(config,pumpmymongoose,guild) {
         pumpmymongoose.Guild.exists({'_id': guild.id}, function(err, result) {
             if(err){
                 logger.error("GuildConfig[" + guild.id + "] setup checking error...");
-                logger.error(err1.stack);
+                logger.error(err.stack);
                 throw err;
             }else{
                 if(result){

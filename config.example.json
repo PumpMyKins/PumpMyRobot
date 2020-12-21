@@ -1,0 +1,32 @@
+{
+    "TOKEN": "token",
+    "security" : {
+       "allowed_guilds_id" : ["id"],
+       "api" : {
+          "host" : "host",
+          "token" : "token"
+       }
+    },
+    "bot" : {
+       "default" : {
+          "name" : "PumpMyRobot",
+          "avatar_url" : "url",
+          "activity" : {
+             "name" : "pumpmykins.eu",
+             "type" : "PLAYING"
+          }
+          
+       },
+       "stalking" : {
+          "name" : "PumpMyViewer",
+          "avatar_url" : "url"         
+       },
+       "default_command_prefix" : ".p"
+    },
+    "mongo" : {
+       "host" : "host",
+       "username" : "username",
+       "password" : "password",
+       "database" : "database"
+   }
+ }

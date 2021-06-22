@@ -1,0 +1,26 @@
+{
+  "name": "pumpmyrobot",
+  "version": "0.0.0",
+  "description": "Extendable discord bot",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "git pull --force origin stable",
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PumpMyKins/PumpMyRobot.git"
+  },
+  "author": "Clem",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/PumpMyKins/PumpMyRobot/issues"
+  },
+  "homepage": "https://github.com/PumpMyKins/PumpMyRobot#readme",
+  "dependencies": {
+    "discord.js": "^12.5.3",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.5"
+  }
+}

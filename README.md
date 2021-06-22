@@ -1,3 +1,1 @@
-# PumpMyBotTicket
-Bot discord
-author: Mathcroft
+# PumpMyRobot

@@ -5,7 +5,6 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "prestart": "git pull --force origin stable",
     "start": "node ."
   },
   "repository": {

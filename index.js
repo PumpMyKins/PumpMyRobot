@@ -2,19 +2,25 @@ import { Logger } from './libs/logger.cjs';
 
 Logger.info("Hello discord's world !");
 
-// Validate config file
-import Config from './config.js';
-if(!Object.prototype.hasOwnProperty.call(Config,"token")){
+// GET DATA FOLDER
+const PMR_MODULES = process.env.PMR_MODULES || process.cwd();
+Logger.debug("Modules path :" + PMR_MODULES)
+
+// GET CONFIG
+const CONFIG = (await import(PMR_MODULES + '/config.js')).default;
+console.log(CONFIG);
+if(!Object.prototype.hasOwnProperty.call(CONFIG,"token")){
     Logger.error("Missing Config fields (bot username or token) !")
     process.exit(0);
 }
-// Start discord client instance
+
+// DISCORD BOT
 import { Client } from 'discord.js';
 const client = new Client();
 try {
     // STARTING BOT
     Logger.debug("Discord client connecting ...")
-    await client.login(Config.token);
+    await client.login(CONFIG.token);
     Logger.info("Discord client connected ...")
 
 } catch (error) {

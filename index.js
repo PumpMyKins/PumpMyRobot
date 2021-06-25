@@ -8,7 +8,6 @@ Logger.debug("Modules path :" + PMR_MODULES)
 
 // GET CONFIG
 const CONFIG = (await import(PMR_MODULES + '/config.js')).default;
-console.log(CONFIG);
 if(!Object.prototype.hasOwnProperty.call(CONFIG,"token")){
     Logger.error("Missing Config fields (bot username or token) !")
     process.exit(0);

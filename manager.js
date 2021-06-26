@@ -40,4 +40,12 @@ export class PumpMyManager {
         return intents;
     }
 
+    //////// MODULES METHODS ////////
+
+    addModule(module){
+
+        
+
+    }
+
 }

@@ -43,9 +43,28 @@ export class PumpMyManager {
     //////// MODULES METHODS ////////
 
     addModule(module){
+        if(!module){
+            throw new Error("Undefined module");
+        } else if(this.modules.has(module.name)){
+            throw new ModuleAlreadyHandleError(module);
+        }
+        this.modules.set(module.name,module); // ADDING MODULE
+    }
 
-        
+    get countModules(){
+        return this.modules.size;
+    }
 
+}
+
+export class ModuleAlreadyHandleError extends Error {
+    constructor(module){
+        super("The module \"" + module.name + "\" already handle by manager.");
+        this.module = module;
+    }
+
+    getModule(){
+        return this.module;
     }
 
 }

@@ -1,4 +1,4 @@
 export default {
     name: "example",
-    intents: []
+    intents: ["GUILD_PRESENCES", "GUILD_MEMBERS"]
 }

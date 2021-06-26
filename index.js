@@ -13,9 +13,13 @@ if(!Object.prototype.hasOwnProperty.call(CONFIG,"token")){
     process.exit(0);
 }
 
+// MANAGER
+import { PumpMyManager } from './pumpmymanager.js';
+const manager = new PumpMyManager();
 // DISCORD BOT
 import { Client } from 'discord.js';
-const client = new Client();
+const intents = manager.getIntents();
+const client = new Client({ ws: { intents: intents } });
 try {
     // STARTING BOT
     Logger.debug("Discord client connecting ...")

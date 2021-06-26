@@ -3,7 +3,7 @@ import { Logger } from './libs/logger.cjs';
 Logger.info("Hello discord's world !");
 
 // GET DATA FOLDER
-const PMR_MODULES = process.env.PMR_MODULES || process.cwd();
+const PMR_MODULES = getPumpMyRobotDataPath();
 Logger.debug("Modules path :" + PMR_MODULES)
 
 // GET CONFIG
@@ -29,4 +29,12 @@ try {
 } catch (error) {
     Logger.error("ERROR during bot init phase :", error);
     process.exit(1);
+}
+
+function getPumpMyRobotDataPath(){
+    const path = process.env.PMR_MODULES || process.cwd();
+    if(path.endsWith('/')){
+        return path;
+    }
+    return path + "/";
 }

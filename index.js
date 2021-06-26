@@ -4,7 +4,7 @@ Logger.info("Hello discord's world !");
 
 // GET DATA FOLDER
 const PMR_MODULES = getPumpMyRobotDataPath();
-Logger.debug("Modules path :" + PMR_MODULES)
+Logger.debug("Modules path : " + PMR_MODULES)
 
 // GET CONFIG
 const CONFIG = (await import(PMR_MODULES + '/config.js')).default;

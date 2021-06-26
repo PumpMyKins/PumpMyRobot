@@ -20,21 +20,30 @@ const manager = new PumpMyManager();
 // MODULES LOADER
 import * as fs from 'fs';
 import * as path from 'path';
-import loader from './loader.js';
+import loader, { NoModuleEntrypointFoundError } from './loader.js';
 
-const files = fs.readdirSync(PMR_MODULES);
-files.map(function (file) {
-    return path.join(PMR_MODULES, file);
-}).filter(function (file) {
-    return fs.statSync(file).isDirectory();
-}).forEach(function (folder) {
+Logger.debug("Starting modules loading process...");
+const folders = fs.readdirSync(PMR_MODULES).map( file => path.join(PMR_MODULES, file)).filter( file => fs.statSync(file).isDirectory());
+for (const i in folders) {
     try {   // TRY TO LOAD FOLDER AS MODULE
-        const module = loader.load(folder);
+        const module = await loader.load(folders[i]);
         manager.addModule(module);
+        Logger.info("Manager now handle \"" + module.name + "\" module.");
     } catch (error) {
-        // TODO: HANDLE ERROR
+        if(error instanceof NoModuleEntrypointFoundError){
+            Logger.warn(error.message);
+        }else{
+            Logger.error(error.stack);
+        }
     }
-});
+}
+Logger.debug("Modules loading process finished...");
+
+if(manager.countModules < 1){ // NO MODULE
+    Logger.warn("No module found, stopping bot.");
+    Logger.warn("Add valid module in PMR_MODULES path : " + PMR_MODULES);
+    process.exit(0);
+}
 
 // DISCORD BOT
 import { Client } from 'discord.js';

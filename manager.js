@@ -4,17 +4,17 @@ import { Intents } from "discord.js";
 export class PumpMyManager {
 
     constructor() {
-        this.client = null;
+        this.discord_client = null;
 
         this.modules = new Map();
     }
 
     //////// CLIENT METHODS ////////
-    setClient(c){
-        this.client = c;
+    set client(c){
+        this.discord_client = c;
     }
 
-    getClient(){
+    get client(){
         if(this.client == null) { // throw error if client not init yet
             throw new Error("Discord Client not ready yet.");
         }
@@ -22,10 +22,10 @@ export class PumpMyManager {
     }
     
     //////// INTENTS METHODS ////////
-    getIntents(){
+    get intents(){
         const intentsList = new Array(); // push intent if not already contains in the array
-        this.modules.forEach((_, module) => {
-            if(module.intents == null) {
+        this.modules.forEach((module, _) => {
+            if(!Object.prototype.hasOwnProperty.call(module, "intents") || module.intents == null || module.intents.size == 0) {
                 Logger.warn("No specified intents for \"" + module.name + "\" module.");
             }else {
                 module.intents.forEach(intent => {

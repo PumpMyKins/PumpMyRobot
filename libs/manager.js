@@ -1,4 +1,4 @@
-import { Logger } from './libs/logger.cjs';
+import { Logger } from './logger.cjs';
 import { Intents } from "discord.js";
 
 export class PumpMyManager {

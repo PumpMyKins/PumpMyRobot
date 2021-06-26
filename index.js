@@ -14,13 +14,13 @@ if(!Object.prototype.hasOwnProperty.call(CONFIG,"token")){
 }
 
 // MANAGER
-import { PumpMyManager } from './manager.js';
+import { PumpMyManager } from './libs/manager.js';
 const manager = new PumpMyManager();
 
 // MODULES LOADER
 import * as fs from 'fs';
 import * as path from 'path';
-import loader, { NoModuleEntrypointFoundError } from './loader.js';
+import loader, { NoModuleEntrypointFoundError } from './libs/loader.js';
 
 Logger.debug("Starting modules loading process...");
 const folders = fs.readdirSync(PMR_MODULES).map( file => path.join(PMR_MODULES, file)).filter( file => fs.statSync(file).isDirectory());

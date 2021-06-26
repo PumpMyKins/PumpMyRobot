@@ -14,17 +14,43 @@ if(!Object.prototype.hasOwnProperty.call(CONFIG,"token")){
 }
 
 // MANAGER
-import { PumpMyManager } from './pumpmymanager.js';
+import { PumpMyManager } from './manager.js';
 const manager = new PumpMyManager();
+
+// MODULES LOADER
+import * as fs from 'fs';
+import * as path from 'path';
+import loader from './loader.js';
+
+const files = fs.readdirSync(PMR_MODULES);
+files.map(function (file) {
+    return path.join(PMR_MODULES, file);
+}).filter(function (file) {
+    return fs.statSync(file).isDirectory();
+}).forEach(function (folder) {
+    try {   // TRY TO LOAD FOLDER AS MODULE
+        const module = loader.load(folder);
+        manager.addModule(module);
+    } catch (error) {
+        // TODO: HANDLE ERROR
+    }
+});
+
 // DISCORD BOT
 import { Client } from 'discord.js';
 const intents = manager.getIntents();
 const client = new Client({ ws: { intents: intents } });
 try {
+
+    // ASYNC WAIT READY
+    client.on('ready', async () => {
+        Logger.info("Discord client connected !");
+        // TODO: SYNC ENABLE MODULES
+    });
+
     // STARTING BOT
     Logger.debug("Discord client connecting ...")
     await client.login(CONFIG.token);
-    Logger.info("Discord client connected ...")
 
 } catch (error) {
     Logger.error("ERROR during bot init phase :", error);

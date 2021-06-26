@@ -38,17 +38,20 @@ files.map(function (file) {
 
 // DISCORD BOT
 import { Client } from 'discord.js';
-const intents = manager.getIntents();
-const client = new Client({ ws: { intents: intents } });
+const client = new Client({ intents: manager.intents });
 try {
 
     // ASYNC WAIT READY
     client.on('ready', async () => {
         Logger.info("Discord client connected !");
+
+        // SET MANAGER CLIENT INSTANCE
+        manager.client = client;
+
         // TODO: SYNC ENABLE MODULES
     });
 
-    // STARTING BOT
+    // STARTING BOT CONNECTION
     Logger.debug("Discord client connecting ...")
     await client.login(CONFIG.token);
 

@@ -1,4 +1,5 @@
 import { Logger, ModuleLogger } from './logger.cjs';
+import { CommandsManager } from './commands.js';
 import { Intents } from "discord.js";
 
 export class PumpMyManager {
@@ -7,6 +8,7 @@ export class PumpMyManager {
         this.discord_client = null;
 
         this.mods = new Map();
+        this.cmds = new CommandsManager();
     }
 
     //////// CLIENT METHODS ////////
@@ -70,6 +72,11 @@ export class PumpMyManager {
         return new ModuleManager(this, module.name);
     }
 
+    //////// Commands METHODS ////////
+
+    get commands(){
+        return this.cmds;
+    }
 }
 
 export class ModuleManager {
@@ -92,6 +99,10 @@ export class ModuleManager {
 
     get LOGGER(){
         return ModuleLogger(this.name); // TODO: custom module LOGGER
+    }
+
+    get CMD(){
+        return this.manager.commands.getCommandsModuleManager(this.name);
     }
 }
 

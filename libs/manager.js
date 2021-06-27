@@ -1,4 +1,4 @@
-import { Logger } from './logger.cjs';
+import { Logger, ModuleLogger } from './logger.cjs';
 import { Intents } from "discord.js";
 
 export class PumpMyManager {
@@ -6,7 +6,7 @@ export class PumpMyManager {
     constructor() {
         this.discord_client = null;
 
-        this.modules = new Map();
+        this.mods = new Map();
     }
 
     //////// CLIENT METHODS ////////
@@ -51,10 +51,48 @@ export class PumpMyManager {
         this.modules.set(module.name,module); // ADDING MODULE
     }
 
-    get countModules(){
-        return this.modules.size;
+    removeModule(name) {
+        if(!this.mods.has(name)){
+            throw new Error("Can't remove Undefined module[" + name + "]");
+        }
+        this.mods.delete(name);
     }
 
+    get countModules(){
+        return this.mods.size;
+    }
+
+    get modules(){
+        return this.mods;
+    }
+
+    getModuleManager(module){
+        return new ModuleManager(this, module.name);
+    }
+
+}
+
+export class ModuleManager {
+    constructor(manager, name){
+        this.manager = manager;
+        this.name = name;
+    }
+
+    get intents(){
+        return this.manager.intents;
+    }
+
+    get countModules(){
+        return this.manager.countModules;
+    }
+
+    get discord(){
+        return this.manager.client;
+    }
+
+    get LOGGER(){
+        return ModuleLogger(this.name); // TODO: custom module LOGGER
+    }
 }
 
 export class ModuleAlreadyHandleError extends Error {

@@ -2,16 +2,12 @@ import { Logger } from './libs/logger.cjs';
 
 Logger.info("Hello discord's world !");
 
+import { getConfig, getPumpMyRobotDataPath } from './libs/data.js';
 // GET DATA FOLDER
 const PMR_MODULES = getPumpMyRobotDataPath();
 Logger.debug("Modules path : " + PMR_MODULES)
-
 // GET CONFIG
-const CONFIG = (await import(PMR_MODULES + '/config.js')).default;
-if(!Object.prototype.hasOwnProperty.call(CONFIG,"token")){
-    Logger.error("Missing Config fields (token) !")
-    process.exit(0);
-}
+const CONFIG = await getConfig();
 
 // MANAGER
 import { PumpMyManager } from './libs/manager.js';

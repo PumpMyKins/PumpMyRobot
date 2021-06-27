@@ -29,7 +29,7 @@ for (const i in folders) {
         if(error instanceof NoModuleEntrypointFoundError){
             Logger.warn(error.message);
         }else{
-            Logger.error(error.stack);
+            Logger.error("Error during " + folders[i] + " importing process :\n" + error.stack);
         }
     }
 }
@@ -73,12 +73,4 @@ try {
 } catch (error) {
     Logger.error("ERROR during bot init phase :", error);
     process.exit(1);
-}
-
-function getPumpMyRobotDataPath(){
-    const path = process.env.PMR_MODULES || process.cwd();
-    if(path.endsWith('/')){
-        return path;
-    }
-    return path + "/";
 }

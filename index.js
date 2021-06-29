@@ -21,7 +21,9 @@ import loader, { NoModuleEntrypointFoundError } from './libs/loader.js';
 const workdir = getPumpMyRobotWorkPath();
 if(PMR_MODULES != workdir){
     Logger.debug("Adding built-int module");
-    load_module(path.join(workdir, "builtin_module"));
+    const module = await loader.load(folders[i]);
+    manager.addModule(module);
+    Logger.info("Manager now handle \"" + module.name + "\" module.");
 }
 
 Logger.debug("Starting modules loading process...");

@@ -2,7 +2,7 @@ import { Logger } from './libs/logger.cjs';
 
 Logger.info("Hello discord's world !");
 
-import { getConfig, getPumpMyRobotDataPath } from './libs/data.js';
+import { getConfig, getPumpMyRobotDataPath, getPumpMyRobotWorkPath } from './libs/data.js';
 // GET DATA FOLDER
 const PMR_MODULES = getPumpMyRobotDataPath();
 Logger.debug("Modules path : " + PMR_MODULES)
@@ -17,6 +17,12 @@ const manager = new PumpMyManager();
 import * as fs from 'fs';
 import * as path from 'path';
 import loader, { NoModuleEntrypointFoundError } from './libs/loader.js';
+
+const workdir = getPumpMyRobotWorkPath();
+if(PMR_MODULES != workdir){
+    Logger.debug("Adding built-int module");
+    load_module(path.join(workdir, "builtin_module"));
+}
 
 Logger.debug("Starting modules loading process...");
 const folders = fs.readdirSync(PMR_MODULES).map( file => path.join(PMR_MODULES, file)).filter( file => fs.statSync(file).isDirectory());

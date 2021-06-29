@@ -10,7 +10,6 @@ VOLUME /modules
 ENV PMR_MODULES=/modules
 
 # COPY CONFIG IN DATA
-COPY builtin_module /modules/builtin_module
 COPY package.docker-modules.json /modules/package.json
 COPY config.example.js /modules/config.js
 

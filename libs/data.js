@@ -2,6 +2,14 @@ import { Logger } from './logger.cjs';
 
 export function getPumpMyRobotDataPath() {
     const path = process.env.PMR_MODULES || process.cwd();
+    return completePath(path);
+}
+
+export function getPumpMyRobotWorkPath(){
+    return completePath(process.cwd());
+}
+
+function completePath(path){
     if (path.endsWith('/')) {
         return path;
     }

@@ -21,18 +21,14 @@ import loader, { NoModuleEntrypointFoundError } from './libs/loader.js';
 const workdir = getPumpMyRobotWorkPath();
 if(PMR_MODULES != workdir){
     Logger.debug("Adding built-int module");
-    const module = await loader.load(folders[i]);
-    manager.addModule(module);
-    Logger.info("Manager now handle \"" + module.name + "\" module.");
+    await loadModule(path.join(workdir, "builtin_module"));
 }
 
 Logger.debug("Starting modules loading process...");
 const folders = fs.readdirSync(PMR_MODULES).map( file => path.join(PMR_MODULES, file)).filter( file => fs.statSync(file).isDirectory());
 for (const i in folders) {
     try {   // TRY TO LOAD FOLDER AS MODULE
-        const module = await loader.load(folders[i]);
-        manager.addModule(module);
-        Logger.info("Manager now handle \"" + module.name + "\" module.");
+        await loadModule(folders[i]);
     } catch (error) {
         if(error instanceof NoModuleEntrypointFoundError){
             Logger.warn(error.message);
@@ -81,4 +77,10 @@ try {
 } catch (error) {
     Logger.error("ERROR during bot init phase :", error);
     process.exit(1);
+}
+
+async function loadModule(folder){
+    const module = await loader.load(folder);
+    manager.addModule(module);
+    Logger.info("Manager now handle \"" + module.name + "\" module.");
 }

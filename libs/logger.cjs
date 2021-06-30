@@ -7,7 +7,7 @@ const logFormat = winston.format.printf(function(info) {
 });
 
 function getCONSOLE(format){
-  return new winston.transports.Console({prettyPrint: true, colorize: true, timestamp: true, format: winston.format.combine(winston.format.colorize(), format)});
+  return new winston.transports.Console({prettyPrint: true, colorize: true, timestamp: true, level: 'debug', format: winston.format.combine(winston.format.colorize(), format)});
 }
 
 function getFILE(format) {

@@ -2,7 +2,7 @@ import { Logger, ModuleLogger } from './logger.cjs';
 import { CommandsManager } from './commands.js';
 import { Intents } from "discord.js";
 import { Validator } from './validator.js';
-import RomodExample from '../example_module/example.romod.js';
+import RomodExample from '../example.romod.js';
 
 export class PumpMyManager {
 

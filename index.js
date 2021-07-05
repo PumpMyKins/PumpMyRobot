@@ -70,6 +70,27 @@ try {
         });
     });
 
+    // ASYNC ON INTERACTION
+    const cmds = manager.commands;
+    client.on("interaction", async (interaction) => {
+        if(!interaction.isCommand()){return;} // ONLY HANDLE COMMANDS
+
+        const commandName = interaction.commandName;
+        if(!cmds.exist(commandName)){ // COMMAND NOT FOUND
+            Logger.error("Interaction Command \"" + commandName + "\" not found.")
+            return;
+        }
+
+        const command = cmds.get(commandName);
+        // COMMAND FOUND
+        try {
+            command.interact(manager.getModuleManager(command.module), interaction);
+        } catch (error) {
+            Logger.error("Error during " + commandName + " interaction...");
+            Logger.error(error.stack);
+        }      
+    });
+
     // STARTING BOT CONNECTION
     Logger.debug("Discord client connecting ...")
     await client.login(CONFIG.token);

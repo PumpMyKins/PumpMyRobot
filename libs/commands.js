@@ -1,5 +1,5 @@
 import { Validator } from "./validator.js";
-import CommandExample from "../example_module/command.example.js";
+import CommandExample from "../command.example.js";
 
 export class CommandsManager {
     

@@ -1,6 +1,8 @@
 import { Logger, ModuleLogger } from './logger.cjs';
 import { CommandsManager } from './commands.js';
 import { Intents } from "discord.js";
+import { Validator } from './validator.js';
+import RomodExample from '../example_module/example.romod.js';
 
 export class PumpMyManager {
 
@@ -8,7 +10,7 @@ export class PumpMyManager {
         this.discord_client = null;
 
         this.mods = new Map();
-        this.cmds = new CommandsManager();
+        this.cmds = new CommandsManager(this);
     }
 
     //////// CLIENT METHODS ////////
@@ -120,7 +122,7 @@ export class ModuleAlreadyHandleError extends Error {
         this.module = module;
     }
 
-    getModule(){
+    get module(){
         return this.module;
     }
 

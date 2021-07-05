@@ -44,10 +44,18 @@ export class PumpMyManager {
 
     //////// MODULES METHODS ////////
 
+    _validateModule(module){
+        Validator.fromObject(RomodExample).validate(module); // CREATE VALIDATOR FROM EXAMPLE OBJECT
+    }
+
     addModule(module){
         if(!module){
             throw new Error("Undefined module");
-        } else if(this.modules.has(module.name)){
+        } 
+
+        this._validateModule(module); // VALIDATE MODULE OBJECT
+        
+        if(this.modules.has(module.name)){
             throw new ModuleAlreadyHandleError(module);
         }
         this.modules.set(module.name,module); // ADDING MODULE

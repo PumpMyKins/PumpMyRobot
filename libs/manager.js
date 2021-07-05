@@ -1,6 +1,8 @@
 import { Logger, ModuleLogger } from './logger.cjs';
 import { CommandsManager } from './commands.js';
 import { Intents } from "discord.js";
+import { Validator } from './validator.js';
+import RomodExample from '../example_module/example.romod.js';
 
 export class PumpMyManager {
 
@@ -8,7 +10,7 @@ export class PumpMyManager {
         this.discord_client = null;
 
         this.mods = new Map();
-        this.cmds = new CommandsManager();
+        this.cmds = new CommandsManager(this);
     }
 
     //////// CLIENT METHODS ////////
@@ -44,10 +46,18 @@ export class PumpMyManager {
 
     //////// MODULES METHODS ////////
 
+    _validateModule(module){
+        Validator.fromObject(RomodExample).validate(module); // CREATE VALIDATOR FROM EXAMPLE OBJECT
+    }
+
     addModule(module){
         if(!module){
             throw new Error("Undefined module");
-        } else if(this.modules.has(module.name)){
+        } 
+
+        this._validateModule(module); // VALIDATE MODULE OBJECT
+        
+        if(this.modules.has(module.name)){
             throw new ModuleAlreadyHandleError(module);
         }
         this.modules.set(module.name,module); // ADDING MODULE
@@ -112,7 +122,7 @@ export class ModuleAlreadyHandleError extends Error {
         this.module = module;
     }
 
-    getModule(){
+    get module(){
         return this.module;
     }
 

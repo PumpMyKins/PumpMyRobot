@@ -19,10 +19,10 @@ export class PumpMyManager {
     }
 
     get client(){
-        if(this.client == null) { // throw error if client not init yet
+        if(this.discord_client == null) { // throw error if client not init yet
             throw new Error("Discord Client not ready yet.");
         }
-        return this.client;
+        return this.discord_client;
     }
     
     //////// INTENTS METHODS ////////

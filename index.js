@@ -57,17 +57,11 @@ try {
         // SET MANAGER CLIENT INSTANCE
         manager.client = client;
 
-        // TODO: SYNC ENABLE MODULES
-        manager.modules.forEach(module => {
-            try {
-                module.load(manager.getModuleManager(module));
-            } catch (error) {
-                Logger.error("Error during " + module.name + " module loading...");
-                Logger.error(error.stack);
-                manager.removeModule(module.name);
-                Logger.warn("Module " + module.name + " removed from the manager.");
-            }
-        });
+        // SYNC ENABLE MODULES
+        await manager.loadModules();
+
+        // SYNC ENABLE COMMANDS
+        await manager.cmds.registerCommands();
     });
 
     // ASYNC ON INTERACTION

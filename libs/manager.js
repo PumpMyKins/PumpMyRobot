@@ -44,7 +44,34 @@ export class PumpMyManager {
         return intents;
     }
 
-    //////// MODULES METHODS ////////
+    //////// MODULES UN/LOAD METHODS ////////
+
+    async loadModules(){ // CALL LOAD FUNCTION OF EACH MODULES
+        await this.modules.forEach(async module => {
+            try {
+                Logger.debug("Calling load function on " + module.name + " module.")
+                await module.load(this.getModuleManager(module.name));
+            } catch (error) {
+                Logger.error("Error on " + module.name + " module loading function...");
+                Logger.error(error.stack);
+                this.removeModule(module.name);
+                Logger.warn("Module " + module.name + " removed from the manager.");
+            }
+        });
+    }
+
+    async unloadModules(){ // CALL UNLOAD FUNCTION OF EACH MODULES
+        await this.modules.forEach(async module => {
+            try {
+                await module.unload(this.getModuleManager(module.name));
+            } catch (error) {
+                Logger.error("Error on " + module.name + " module unloading function...");
+                Logger.error(error.stack);
+            }
+            this.removeModule(module.name);
+            Logger.info("Module " + module.name + " removed from the manager.");
+        });
+    }
 
     _validateModule(module){
         Validator.fromObject(RomodExample).validate(module); // CREATE VALIDATOR FROM EXAMPLE OBJECT

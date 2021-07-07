@@ -48,6 +48,11 @@ if(manager.countModules < 1){ // NO MODULE
 // DISCORD BOT
 import { Client } from 'discord.js';
 const client = new Client({ intents: manager.intents });
+
+process.on('SIGINT', handleExit);
+process.on('SIGTERM', handleExit);
+
+
 try {
 
     // ASYNC WAIT READY
@@ -92,6 +97,15 @@ try {
 } catch (error) {
     Logger.error("ERROR during bot init phase :", error);
     process.exit(1);
+}
+
+async function handleExit(){
+    // Properly shutdown
+    await manager.unloadModules();
+    await manager.cmds.unregisterCommands();
+
+    await client.destroy();
+    process.exit(0);
 }
 
 async function loadModule(folder){

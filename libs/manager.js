@@ -19,10 +19,10 @@ export class PumpMyManager {
     }
 
     get client(){
-        if(this.client == null) { // throw error if client not init yet
+        if(this.discord_client == null) { // throw error if client not init yet
             throw new Error("Discord Client not ready yet.");
         }
-        return this.client;
+        return this.discord_client;
     }
     
     //////// INTENTS METHODS ////////
@@ -44,11 +44,46 @@ export class PumpMyManager {
         return intents;
     }
 
-    //////// MODULES METHODS ////////
+    //////// MODULES UN/LOAD METHODS ////////
+
+    async loadModules(){ // CALL LOAD FUNCTION OF EACH MODULES
+        await this.modules.forEach(async module => {
+            try {
+                Logger.debug("Calling load function on " + module.name + " module.")
+                await module.load(this.getModuleManager(module.name));
+            } catch (error) {
+                Logger.error("Error on " + module.name + " module loading function...");
+                Logger.error(error.stack);
+                this.removeModule(module.name);
+                Logger.warn("Module " + module.name + " removed from the manager.");
+            }
+        });
+    }
+
+    async unloadModules(){ // CALL UNLOAD FUNCTION OF EACH MODULES
+        await this.modules.forEach(async module => {
+            try {
+                await module.unload(this.getModuleManager(module.name));
+            } catch (error) {
+                Logger.error("Error on " + module.name + " module unloading function...");
+                Logger.error(error.stack);
+            }
+            this.removeModule(module.name);
+            Logger.info("Module " + module.name + " removed from the manager.");
+        });
+    }
+
+    //////// MODULES UTILS METHODS ////////
 
     _validateModule(module){
         Validator.fromObject(RomodExample).validate(module); // CREATE VALIDATOR FROM EXAMPLE OBJECT
     }
+
+    getModuleManager(name){
+        return new ModuleManager(this, name);
+    }
+
+    //////// MODULES ADD/REMOVE METHODS ////////
 
     addModule(module){
         if(!module){
@@ -78,10 +113,6 @@ export class PumpMyManager {
         return this.mods;
     }
 
-    getModuleManager(module){
-        return new ModuleManager(this, module.name);
-    }
-
     //////// Commands METHODS ////////
 
     get commands(){
@@ -109,6 +140,10 @@ export class ModuleManager {
 
     get LOGGER(){
         return ModuleLogger(this.name); // TODO: custom module LOGGER
+    }
+
+    get module_name(){
+        return this.name;
     }
 
     get CMD(){

@@ -34,7 +34,7 @@ exports.createLogger = createLogger;
 
 exports.ModuleLogger = function(name){
   const moduleLogFormat = winston.format.printf(function(info) {
-    return `${new Date().toISOString()}-${info.level}: [${name}] ${info.message}`;
+    return `${new Date().toISOString()}-${info.level} [${name}]: ${info.message}`;
   });
   return createLogger(moduleLogFormat);
 }

@@ -48,6 +48,11 @@ if(manager.countModules < 1){ // NO MODULE
 // DISCORD BOT
 import { Client } from 'discord.js';
 const client = new Client({ intents: manager.intents });
+
+process.on('SIGINT', handleExit);
+process.on('SIGTERM', handleExit);
+
+
 try {
 
     // ASYNC WAIT READY
@@ -57,25 +62,21 @@ try {
         // SET MANAGER CLIENT INSTANCE
         manager.client = client;
 
-        // TODO: SYNC ENABLE MODULES
-        manager.modules.forEach(module => {
-            try {
-                module.load(manager.getModuleManager(module));
-            } catch (error) {
-                Logger.error("Error during " + module.name + " module loading...");
-                Logger.error(error.stack);
-                manager.removeModule(module.name);
-                Logger.warn("Module " + module.name + " removed from the manager.");
-            }
-        });
+        // SYNC ENABLE MODULES
+        await manager.loadModules();
+
+        // SYNC ENABLE COMMANDS
+        await manager.cmds.registerCommands();
+
     });
 
     // ASYNC ON INTERACTION
     const cmds = manager.commands;
-    client.on("interaction", async (interaction) => {
+    client.on("interactionCreate", async (interaction) => {
         if(!interaction.isCommand()){return;} // ONLY HANDLE COMMANDS
 
         const commandName = interaction.commandName;
+        Logger.debug("Interaction command : " + commandName);
         if(!cmds.exist(commandName)){ // COMMAND NOT FOUND
             Logger.error("Interaction Command \"" + commandName + "\" not found.")
             return;
@@ -84,7 +85,7 @@ try {
         const command = cmds.get(commandName);
         // COMMAND FOUND
         try {
-            command.interact(manager.getModuleManager(command.module), interaction);
+            await command.interact(manager.getModuleManager(command.module_name), interaction);
         } catch (error) {
             Logger.error("Error during " + commandName + " interaction...");
             Logger.error(error.stack);
@@ -98,6 +99,15 @@ try {
 } catch (error) {
     Logger.error("ERROR during bot init phase :", error);
     process.exit(1);
+}
+
+async function handleExit(){
+    // Properly shutdown
+    await manager.unloadModules();
+    await manager.cmds.unregisterCommands();
+
+    await client.destroy();
+    process.exit(0);
 }
 
 async function loadModule(folder){

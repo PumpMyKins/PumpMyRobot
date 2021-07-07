@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/PumpMyKins/PumpMyRobot#readme",
   "dependencies": {
-    "discord.js": "^13.0.0-dev",
+    "discord.js": "^13.0.0-dev.755c180.1625659372",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"
   }

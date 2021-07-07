@@ -1,7 +1,6 @@
 export default {
     name: "modules",
     description: "List/reload modules.",
-    defaultPermission: false,
     permissions: [],
     options: [{
         name: 'ls',
@@ -19,7 +18,7 @@ export default {
             required: true,
         }]
     }],
-    interact(manager, interaction){
+    async interact(manager, interaction){
         manager.LOGGER.info("Command interaction");
     }
 }

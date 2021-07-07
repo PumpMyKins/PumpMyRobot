@@ -4,14 +4,14 @@ export default {
     name: "builtin_MODULE",
     description: "builtin modules command",
     intents: ["GUILD_PRESENCES", "GUILD_MEMBERS"],
-    load(manager) {
+    async load(manager) {
         manager.LOGGER.info("Loading : add module command...");
 
         ReloadCmd.permissions = getConfigPermissions(); // SET PERMISSION
-        manager.CMD.register(ReloadCmd); // REGISTER COMMAND
+        await manager.CMD.register(ReloadCmd); // REGISTER COMMAND
     },
-    unload(manager) {
+    async unload(manager) {
         manager.LOGGER.info("Unloading : remove module command...");
-        manager.CMD.unregister(ReloadCmd); // UNREGISTER COMMAND
+        await manager.CMD.unregister(ReloadCmd); // UNREGISTER COMMAND
     }
 }

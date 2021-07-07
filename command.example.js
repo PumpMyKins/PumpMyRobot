@@ -1,10 +1,10 @@
 export default {
     name: "example",
     description: "example",
-    defaultPermission: false,
     permissions: [],
+    // guild: "guild_id",
     options: [ /* EXAMPLE */ ],
-    interact(manager, interaction){
+    async interact(manager, interaction){
         // INTERACTION EXAMPLE
     }
 }

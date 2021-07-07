@@ -9,15 +9,10 @@ export default {
         if(romodCount == 0){
             throw new NoModuleEntrypointFoundError(folder);
         }else if(romodCount == 1){
-            const module = (await import(files[0])).default;
-            this._validate(module);
-            return module;
+            return (await import(files[0])).default;
         }else {
             throw new MultipleModuleEntrypointError(folder);
         }
-    },
-    _validate(module){
-        // TODO: check attribute
     }
 }
 

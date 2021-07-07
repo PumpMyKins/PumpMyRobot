@@ -67,14 +67,16 @@ try {
 
         // SYNC ENABLE COMMANDS
         await manager.cmds.registerCommands();
+
     });
 
     // ASYNC ON INTERACTION
     const cmds = manager.commands;
-    client.on("interaction", async (interaction) => {
+    client.on("interactionCreate", async (interaction) => {
         if(!interaction.isCommand()){return;} // ONLY HANDLE COMMANDS
 
         const commandName = interaction.commandName;
+        Logger.debug("Interaction command : " + commandName);
         if(!cmds.exist(commandName)){ // COMMAND NOT FOUND
             Logger.error("Interaction Command \"" + commandName + "\" not found.")
             return;
@@ -83,7 +85,7 @@ try {
         const command = cmds.get(commandName);
         // COMMAND FOUND
         try {
-            command.interact(manager.getModuleManager(command.module), interaction);
+            await command.interact(manager.getModuleManager(command.module_name), interaction);
         } catch (error) {
             Logger.error("Error during " + commandName + " interaction...");
             Logger.error(error.stack);

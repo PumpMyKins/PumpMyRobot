@@ -73,9 +73,17 @@ export class PumpMyManager {
         });
     }
 
+    //////// MODULES UTILS METHODS ////////
+
     _validateModule(module){
         Validator.fromObject(RomodExample).validate(module); // CREATE VALIDATOR FROM EXAMPLE OBJECT
     }
+
+    getModuleManager(name){
+        return new ModuleManager(this, name);
+    }
+
+    //////// MODULES ADD/REMOVE METHODS ////////
 
     addModule(module){
         if(!module){
@@ -105,10 +113,6 @@ export class PumpMyManager {
         return this.mods;
     }
 
-    getModuleManager(module){
-        return new ModuleManager(this, module.name);
-    }
-
     //////// Commands METHODS ////////
 
     get commands(){
@@ -136,6 +140,10 @@ export class ModuleManager {
 
     get LOGGER(){
         return ModuleLogger(this.name); // TODO: custom module LOGGER
+    }
+
+    get module_name(){
+        return this.name;
     }
 
     get CMD(){
